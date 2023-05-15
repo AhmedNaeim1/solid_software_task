@@ -7,7 +7,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-          
+
       - name: Check file existence
         id: check_files
         uses: andstor/file-existence-action@v1
@@ -16,18 +16,23 @@ jobs:
 
       - name: Setup flutter
         if: steps.check_files.outputs.files_exists == 'true'
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v3
         with:
-          channel: 'stable'
-      
-      - name: Check flutter sdk version
+          flutter-version: 'stable'
+
+      - name: Set Flutter SDK version
         if: steps.check_files.outputs.files_exists == 'true'
-        run: flutter --version
-      
+        run: echo "FLUTTER_SDK_VERSION=$(flutter --version)" >> $GITHUB_ENV
+
       - name: Get dependencies
         if: steps.check_files.outputs.files_exists == 'true'
         run: flutter pub get
-      
+
+      # Use the environment variable in subsequent steps
+      - name: Check flutter sdk version
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: echo $FLUTTER_SDK_VERSION
+
       - name: Setup Dart Code Metrics
         if: steps.check_files.outputs.files_exists == 'true'
         run: dart pub get dart_code_metrics
