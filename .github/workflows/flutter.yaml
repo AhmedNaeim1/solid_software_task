@@ -40,8 +40,7 @@ jobs:
           if [ -d test ]; then dirs_to_analyse+=" test"; fi
           if [ -d example ]; then dirs_to_analyse+=" example"; fi
 
-          if [ dirs_to_analyse != "" ]
-          then
+          if [ "$dirs_to_analyse" != "" ]; then
             dart run dart_code_metrics:metrics \
               analyze \
               $dirs_to_analyse \
@@ -53,10 +52,11 @@ jobs:
               $dirs_to_analyse \
               --fatal-unused
             dart run dart_code_metrics:metrics \
-              check-unused-code \ 
+              check-unused-code \
               $dirs_to_analyse \
               --fatal-unused
           fi
+      
 
       - name: Check formatting
         if: steps.check_files.outputs.files_exists == 'true'
